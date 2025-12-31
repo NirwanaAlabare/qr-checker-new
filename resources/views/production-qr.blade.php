@@ -368,6 +368,76 @@
                                 <input type="text" class="form-control form-control-sm" name="reject_allocation" id="reject_allocation" readonly>
                             </div>
                         </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>QC Reject IN</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="qc_reject_in" id="qc_reject_in" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>QC Status</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="qc_reject_status" id="qc_reject_status" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>QC Process</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="qc_reject_process" id="qc_reject_process" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-end d-none" id="reworked-qc-reject">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>QC Reject Out</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="qc_reject_out_sewing" id="qc_reject_out_sewing" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>QC Reject Tujuan</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="qc_reject_out_tujuan_sewing" id="qc_reject_out_tujuan_sewing" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-end d-none" id="rejected-qc-reject">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>QC Reject Type(s)</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="qc_reject_type" id="qc_reject_type" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>QC Reject Area(s)</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="qc_reject_area" id="qc_reject_area" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>QC Reject Grade</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="qc_reject_grade" id="qc_reject_grade" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>QC Reject Out</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="qc_reject_out" id="qc_reject_out" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>QC Reject Out No.</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="qc_reject_out_trans" id="qc_reject_out_trans" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>QC Reject Out Alokasi</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="qc_reject_out_tujuan" id="qc_reject_out_tujuan" readonly>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-8">
@@ -655,11 +725,41 @@
                         document.getElementById('reject_in').value = response.reject_in ? response.reject_in : response.packing_reject_in;
                         document.getElementById('reject_type').value = response.defect_type ? response.defect_type : response.packing_defect_type;
                         document.getElementById('reject_allocation').value = response.defect_allocation ? response.defect_allocation : response.packing_defect_allocation;
+                        document.getElementById('qc_reject_in').value = response.qc_reject_in ? response.qc_reject_in : "";
+                        document.getElementById('qc_reject_status').value = response.qc_reject_status ? (response.qc_reject_status).toUpperCase() : "";
+                        document.getElementById('qc_reject_process').value = response.qc_reject_process ? (response.qc_reject_process).toUpperCase() : "";
+                        document.getElementById('qc_reject_type').value = response.qc_reject_type ? response.qc_reject_type : "";
+                        document.getElementById('qc_reject_area').value = response.qc_reject_area ? response.qc_reject_area : "";
+                        document.getElementById('qc_reject_grade').value = response.qc_reject_grade ? (response.qc_reject_grade).toUpperCase() : "";
+                        document.getElementById('qc_reject_out').value = response.qc_reject_out ? response.qc_reject_out : "";
+                        document.getElementById('qc_reject_out_trans').value = response.qc_reject_out_trans ? response.qc_reject_out_trans : "";
+                        document.getElementById('qc_reject_out_tujuan').value = response.qc_reject_out_tujuan ? (response.qc_reject_out_tujuan).toUpperCase() : "";
+                        document.getElementById('qc_reject_out_sewing').value = response.qc_reject_status == "rejected" ? response.qc_reject_out_sewing : "SEWING";
+
+                        if (response.qc_reject_status == "reworked") {
+                            document.getElementById('reworked-qc-reject').classList.remove('d-none');
+                            document.getElementById('rejected-qc-reject').classList.add('d-none');
+                        } else if (response.qc_reject_status == "rejected") {
+                            document.getElementById('reworked-qc-reject').classList.add('d-none');
+                            document.getElementById('rejected-qc-reject').classList.remove('d-none');
+                        }
                     } else {
                         document.getElementById('reject_line').value = "-";
                         document.getElementById('reject_in').value = "-";
                         document.getElementById('reject_type').value = "-";
                         document.getElementById('reject_allocation').value = "-";
+                        document.getElementById('qc_reject_in').value = "-";
+                        document.getElementById('qc_reject_status').value = "-";
+                        document.getElementById('qc_reject_process').value = "-";
+                        document.getElementById('qc_reject_type').value = "-";
+                        document.getElementById('qc_reject_area').value = "-";
+                        document.getElementById('qc_reject_grade').value = "-";
+                        document.getElementById('qc_reject_out').value = "-";
+                        document.getElementById('qc_reject_out_trans').value = "-";
+                        document.getElementById('qc_reject_out_tujuan').value = "-";
+                        document.getElementById('qc_reject_out_sewing').value = "-";
+                        document.getElementById('reworked-qc-reject').classList.add('d-none');
+                        document.getElementById('rejected-qc-reject').classList.add('d-none');
                     }
 
                     $('#scan-qr-header').CardWidget('toggle')

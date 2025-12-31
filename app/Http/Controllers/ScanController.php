@@ -321,8 +321,18 @@ class ScanController extends Controller
                 -- 📅 Master Plan Info
                 mp.id AS master_plan_id,
                 mp.tgl_plan,
-                DATE_FORMAT(mp.tgl_plan, '%d-%m-%Y') AS tgl_plan_fix
+                DATE_FORMAT(mp.tgl_plan, '%d-%m-%Y') AS tgl_plan_fix,
 
+                qc_reject_in,
+                qc_reject_status,
+                qc_reject_process,
+                qc_reject_grade,
+                qc_reject_type,
+                qc_reject_area,
+                qc_reject_out,
+                qc_reject_out_trans,
+                qc_reject_out_tujuan,
+                qc_reject_out_sewing
             FROM (
                     -- 🔹 Sewing data
                     SELECT
@@ -339,11 +349,28 @@ class ScanController extends Controller
                         NULL AS packing_defect_type,
                         NULL AS packing_defect_allocation,
 
+                        ori.created_at AS qc_reject_in,
+                        ori.status AS qc_reject_status,
+                        ori.process AS qc_reject_process,
+                        ori.grade AS qc_reject_grade,
+                        GROUP_CONCAT(DISTINCT qcdt.defect_type) AS qc_reject_type,
+                        GROUP_CONCAT(DISTINCT qcda.defect_area) AS qc_reject_area,
+                        COALESCE(oro.updated_at, oro.created_at, oro.tanggal) qc_reject_out,
+                        oro.no_transaksi qc_reject_out_trans,
+                        oro.tujuan qc_reject_out_tujuan,
+                        ori.updated_at AS qc_reject_out_sewing,
+
                         o.master_plan_id
                     FROM output_rejects o
                     LEFT JOIN output_defect_types dt ON dt.id = o.reject_type_id
                     LEFT JOIN user_sb_wip u ON o.created_by = u.id
                     LEFT JOIN userpassword us ON us.line_id = u.line_id
+                    LEFT JOIN output_reject_in as ori on o.id = ori.reject_id AND ori.output_type = 'qc'
+                    LEFT JOIN output_reject_in_detail as orid on orid.reject_in_id = ori.id
+                    LEFT JOIN output_defect_types as qcdt on qcdt.id = orid.reject_type_id
+                    LEFT JOIN output_defect_areas as qcda on qcda.id = orid.reject_area_id
+                    LEFT JOIN output_reject_out_detail as orod on orod.reject_in_id = ori.id
+                    LEFT JOIN output_reject_out as oro on oro.id = orod.reject_out_id
                     WHERE o.kode_numbering = '".$qr."'
 
                     UNION
@@ -363,15 +390,76 @@ class ScanController extends Controller
                         dt.defect_type AS packing_defect_type,
                         dt.allocation AS packing_defect_allocation,
 
+                        ori.created_at AS qc_reject_in,
+                        ori.status AS qc_reject_status,
+                        ori.process AS qc_reject_process,
+                        ori.grade AS qc_reject_grade,
+                        GROUP_CONCAT(DISTINCT qcdt.defect_type) AS qc_reject_type,
+                        GROUP_CONCAT(DISTINCT qcda.defect_area) AS qc_reject_area,
+                        COALESCE(oro.updated_at, oro.created_at, oro.tanggal) qc_reject_out,
+                        oro.no_transaksi qc_reject_out_trans,
+                        oro.tujuan qc_reject_out_tujuan,
+                        ori.updated_at AS qc_reject_out_sewing,
+
                         o.master_plan_id
                     FROM output_rejects_packing o
                     LEFT JOIN output_defect_types dt ON dt.id = o.reject_type_id
                     LEFT JOIN userpassword us ON us.username = o.created_by
+                    LEFT JOIN output_reject_in as ori on o.id = ori.reject_id AND ori.output_type = 'packing'
+                    LEFT JOIN output_reject_in_detail as orid on orid.reject_in_id = ori.id
+                    LEFT JOIN output_defect_types as qcdt on qcdt.id = orid.reject_type_id
+                    LEFT JOIN output_defect_areas as qcda on qcda.id = orid.reject_area_id
+                    LEFT JOIN output_reject_out_detail as orod on orod.reject_in_id = ori.id
+                    LEFT JOIN output_reject_out as oro on oro.id = orod.reject_out_id
                     WHERE o.kode_numbering = '".$qr."'
-            ) AS merged
 
-            LEFT JOIN master_plan mp ON mp.id = merged.master_plan_id
-            GROUP BY merged.kode_numbering
+                    UNION
+
+                    -- 🔹 Reject data
+                    SELECT
+                        ori.kode_numbering,
+                        CONCAT(UPPER(ori.output_type), ' ' , us.username) AS sewing_line,
+                        ori.type as reject_status,
+                        ori.created_at AS reject_in,
+                        dt.defect_type,
+                        dt.allocation AS defect_allocation,
+
+                        NULL AS packing_line,
+                        NULL AS packing_reject_status,
+                        NULL AS packing_reject_in,
+                        NULL AS packing_defect_type,
+                        NULL AS packing_defect_allocation,
+
+                        ori.created_at AS qc_reject_in,
+                        ori.status AS qc_reject_status,
+                        ori.process AS qc_reject_process,
+                        ori.grade AS qc_reject_grade,
+                        GROUP_CONCAT(DISTINCT qcdt.defect_type) AS qc_reject_type,
+                        GROUP_CONCAT(DISTINCT qcda.defect_area) AS qc_reject_area,
+                        COALESCE(oro.updated_at, oro.created_at, oro.tanggal) qc_reject_out,
+                        oro.no_transaksi qc_reject_out_trans,
+                        oro.tujuan qc_reject_out_tujuan,
+                        ori.updated_at AS qc_reject_out_sewing,
+
+                        ori.master_plan_id
+                    FROM output_reject_in ori
+                    LEFT JOIN output_defect_types dt ON dt.id = ori.reject_type_id
+                    LEFT JOIN userpassword us ON us.line_id = ori.line_id
+                    LEFT JOIN output_reject_in_detail as orid on orid.reject_in_id = ori.id
+                    LEFT JOIN output_defect_types as qcdt on qcdt.id = orid.reject_type_id
+                    LEFT JOIN output_defect_areas as qcda on qcda.id = orid.reject_area_id
+                    LEFT JOIN output_reject_out_detail as orod on orod.reject_in_id = ori.id
+                    LEFT JOIN output_reject_out as oro on oro.id = orod.reject_out_id
+                    WHERE ori.kode_numbering = '".$qr."'
+                    GROUP BY
+                        ori.id
+            ) AS merged
+            LEFT JOIN
+                master_plan mp ON mp.id = merged.master_plan_id
+            WHERE
+                merged.kode_numbering is not null
+            GROUP BY
+                merged.kode_numbering
         ");
 
         return json_encode($data_sb ? $data_sb[0] : '-');
