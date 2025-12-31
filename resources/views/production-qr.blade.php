@@ -368,6 +368,10 @@
                                 <input type="text" class="form-control form-control-sm" name="reject_allocation" id="reject_allocation" readonly>
                             </div>
                         </div>
+                        <div class="col-12">
+                            <hr style="border-top: 1px solid rgba(109, 109, 109, 1);">
+                            <h5 class="text-sb fw-bold my-1">QC Reject</h5>
+                        </div>
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label class="form-label"><small><b>QC Reject IN</b></small></label>
@@ -734,7 +738,8 @@
                         document.getElementById('qc_reject_out').value = response.qc_reject_out ? response.qc_reject_out : "";
                         document.getElementById('qc_reject_out_trans').value = response.qc_reject_out_trans ? response.qc_reject_out_trans : "";
                         document.getElementById('qc_reject_out_tujuan').value = response.qc_reject_out_tujuan ? (response.qc_reject_out_tujuan).toUpperCase() : "";
-                        document.getElementById('qc_reject_out_sewing').value = response.qc_reject_status == "rejected" ? response.qc_reject_out_sewing : "SEWING";
+                        document.getElementById('qc_reject_out_sewing').value = response.qc_reject_out_sewing;
+                        document.getElementById('qc_reject_out_tujuan_sewing').value = response.qc_reject_status == "rejected" ? response.qc_reject_out_sewing : "SEWING";
 
                         if (response.qc_reject_status == "reworked") {
                             document.getElementById('reworked-qc-reject').classList.remove('d-none');
@@ -758,6 +763,7 @@
                         document.getElementById('qc_reject_out_trans').value = "-";
                         document.getElementById('qc_reject_out_tujuan').value = "-";
                         document.getElementById('qc_reject_out_sewing').value = "-";
+                        document.getElementById('qc_reject_out_tujuan_sewing').value = "-";
                         document.getElementById('reworked-qc-reject').classList.add('d-none');
                         document.getElementById('rejected-qc-reject').classList.add('d-none');
                     }
