@@ -83,16 +83,22 @@
                         <input type="text" class="form-control form-control-sm" name="txtcolor" id="txtcolor" readonly>
                     </div>
                 </div>
-                <div class="col-6 col-md-6">
+                <div class="col-4 col-md-4">
                     <div class="mb-3">
                         <label class="form-label"><small><b>Size</b></small></label>
                         <input type="text" class="form-control form-control-sm" name="txtsize" id="txtsize" readonly>
                     </div>
                 </div>
-                <div class="col-6 col-md-6">
+                <div class="col-4 col-md-4">
                     <div class="mb-3">
                         <label class="form-label"><small><b>Dest</b></small></label>
                         <input type="text" class="form-control form-control-sm" name="txtdest" id="txtdest" readonly>
+                    </div>
+                </div>
+                <div class="col-4 col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label"><small><b>Dari Stocker</b></small></label>
+                        <input type="text" class="form-control form-control-sm" name="txtstocker" id="txtstocker" readonly>
                     </div>
                 </div>
                 <hr style="border-top: 1px solid rgba(109, 109, 109, 1);">
@@ -473,6 +479,7 @@
                 $("#txtcolor").val('');
                 $("#txtsize").val('');
                 $("#txtdest").val('');
+                $("#txtstocker").val('');
                 $("#txtcut_plan").val('');
                 $("#txtcut_kode").val('');
                 $("#txtno_form").val('');
@@ -817,6 +824,7 @@
                     document.getElementById('txtcut_plan').value = response.waktu;
                     document.getElementById('txtno_form').value = response.no_form;
                     document.getElementById('txtdest').value = response.dest;
+                    document.getElementById('txtstocker').value = response.id_qr_stocker;
                     document.getElementById('txtws').value = response.ws;
                     document.getElementById('txtline_load').value = response.line_loading;
                     document.getElementById('txttgl_load').value = response.tanggal_loading;

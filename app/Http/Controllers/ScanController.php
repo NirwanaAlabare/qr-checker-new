@@ -70,7 +70,8 @@ class ScanController extends Controller
             COALESCE(f.no_form, fr.no_form, fp.no_form) no_form,
             m.dest,
             COALESCE(ll.nama_line, ll_bk.nama_line) line_loading,
-            DATE_FORMAT(COALESCE(ll.tanggal_loading, ll_bk.tanggal_loading), '%d-%m-%Y') tanggal_loading
+            DATE_FORMAT(COALESCE(ll.tanggal_loading, ll_bk.tanggal_loading), '%d-%m-%Y') tanggal_loading,
+            COALESCE(stk.id_qr_stocker, stk_bk.id_qr_stocker) id_qr_stocker
             from (
             select id_year_sequence, form_cut_id, form_reject_id, form_piece_id, so_det_id, id_qr_stocker, number from year_sequence a
             where id_year_sequence = '$qr'
