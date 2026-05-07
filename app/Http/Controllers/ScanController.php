@@ -419,7 +419,7 @@ class ScanController extends Controller
                     -- 🔹 Reject data
                     SELECT
                         ori.kode_numbering,
-                        CONCAT(UPPER(ori.output_type), ' ' , us.username) AS sewing_line,
+                        CONCAT(UPPER(CASE WHEN ori.output_type = 'PACKING' THEN 'FINISHING' ELSE ori.output_type END), ' ' , us.username) AS sewing_line,
                         ori.type as reject_status,
                         ori.created_at AS reject_in,
                         dt.defect_type,
