@@ -128,7 +128,11 @@ class ScanController extends Controller
             left join (
                 select
                     DATE(output_secondary_in.updated_at) as tgl_in,
-                    DATE(output_secondary_out.updated_at) as tgl_out,
+                    CASE 
+                        WHEN output_secondary_out.status IN ('rft','rework') 
+                        THEN DATE(output_secondary_out.updated_at)
+                        ELSE NULL
+                    END AS tgl_out,
                     output_secondary_in.kode_numbering,
                     output_secondary_master.secondary tipe
                 from
