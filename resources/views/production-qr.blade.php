@@ -140,7 +140,7 @@
                             readonly>
                     </div>
                 </div>
-                <hr style="border-top: 1px solid rgba(109, 109, 109, 1);">
+                {{-- <hr style="border-top: 1px solid rgba(109, 109, 109, 1);">
                 <h5 class="text-sb fw-bold">Output</h5>
                 <div class="col-12 col-md-12">
                     <div class="mb-3">
@@ -194,6 +194,80 @@
                     <div class="mb-3">
                         <label class="form-label"><small><b>Packing In</b></small></label>
                         <input type="text" class="form-control form-control-sm" name="packpo_in" id="packpo_in" readonly>
+                    </div>
+                </div> --}}
+                <hr style="border-top: 1px solid rgba(109, 109, 109, 1);">
+                <h5 class="text-sb fw-bold">Output</h5>
+                <div class="col-4 col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label"><small><b>Tanggal Plan QC Endline</b></small></label>
+                        <input type="text" class="form-control form-control-sm" name="output_tanggal_plan_qc_endline" id="output_tanggal_plan_qc_endline" readonly>
+                    </div>
+                </div>
+                <div class="col-4 col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label"><small><b>QC Endline</b></small></label>
+                        <input type="text" class="form-control form-control-sm" name="output_qc_endline" id="output_qc_endline" readonly>
+                    </div>
+                </div>
+                <div class="col-4 col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label"><small><b>Tanggal Scan QC Endline</b></small></label>
+                        <input type="text" class="form-control form-control-sm" name="output_tanggal_scan_qc_endline" id="output_tanggal_scan_qc_endline" readonly>
+                    </div>
+                </div>
+                <div class="col-4 col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label"><small><b>Proses Finishing</b></small></label>
+                        <input type="text" class="form-control form-control-sm" name="output_proses_finishing" id="output_proses_finishing" readonly>
+                    </div>
+                </div>
+                <div class="col-4 col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label"><small><b>Tanggal Scan In</b></small></label>
+                        <input type="text" class="form-control form-control-sm" name="output_tanggal_scan_in" id="output_tanggal_scan_in" readonly>
+                    </div>
+                </div>
+                <div class="col-4 col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label"><small><b>Tanggal Scan Out</b></small></label>
+                        <input type="text" class="form-control form-control-sm" name="output_tanggal_scan_out" id="output_tanggal_scan_out" readonly>
+                    </div>
+                </div>
+                <div class="col-4 col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label"><small><b>Tanggal Plan QC Finishing</b></small></label>
+                        <input type="text" class="form-control form-control-sm" name="output_tanggal_plan_qc_finishing" id="output_tanggal_plan_qc_finishing" readonly>
+                    </div>
+                </div>
+                <div class="col-4 col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label"><small><b>QC Finishing Line</b></small></label>
+                        <input type="text" class="form-control form-control-sm" name="output_qc_finishing_line" id="output_qc_finishing_line" readonly>
+                    </div>
+                </div>
+                <div class="col-4 col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label"><small><b>Tanggal Scan QC Finishing</b></small></label>
+                        <input type="text" class="form-control form-control-sm" name="output_tanggal_scan_qc_finishing" id="output_tanggal_scan_qc_finishing" readonly>
+                    </div>
+                </div>
+                <div class="col-4 col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label"><small><b>PO</b></small></label>
+                        <input type="text" class="form-control form-control-sm" name="output_po" id="output_po" readonly>
+                    </div>
+                </div>
+                <div class="col-4 col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label"><small><b>Packing Line</b></small></label>
+                        <input type="text" class="form-control form-control-sm" name="output_packing_line" id="output_packing_line" readonly>
+                    </div>
+                </div>
+                <div class="col-4 col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label"><small><b>Tanggal Scan Packing Line</b></small></label>
+                        <input type="text" class="form-control form-control-sm" name="output_tanggal_scan_packing_line" id="output_tanggal_scan_packing_line" readonly>
                     </div>
                 </div>
                 <hr style="border-top: 1px solid rgba(109, 109, 109, 1);">
@@ -267,6 +341,81 @@
                             <div class="mb-3">
                                 <label class="form-label"><small><b>Defect External OUT</b></small></label>
                                 <input type="text" class="form-control form-control-sm" name="external_out" id="external_out" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr style="border-top: 1px solid rgba(109, 109, 109, 1);">
+                <div class="col-md-12" id="defect-output">
+                    <h5 class="text-sb fw-bold">Defect Finishing</h5>
+                    <div class="row align-items-end">
+                        <div class="col-3 col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>Proses Finishing</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="d_f_proses_finishing" id="d_f_proses_finishing" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>Status Defect</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="d_f_status_defect" id="d_f_status_defect" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>Jenis Defect</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="d_f_jenis_defect" id="d_f_jenis_defect" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>Alokasi</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="d_f_alokasi" id="d_f_alokasi" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>Tanggal Plan</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="d_f_tanggal_plan" id="d_f_tanggal_plan" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>Defect Finishing In</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="d_f_defect_finishing_in" id="d_f_defect_finishing_in" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>Defect Finishing Out</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="d_f_defect_finishing_out" id="d_f_defect_finishing_out" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <h5 class="text-sb-secondary">External</h5>
+                    <div class="row align-items-end">
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>Finishing Defect External</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="d_f_external" id="d_f_external" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>Finishing Defect External Status</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="d_f_external_status" id="d_f_external_status" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>Finishing Defect External IN</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="d_f_external_in" id="d_f_external_in" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>Finishing Defect External OUT</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="d_f_external_out" id="d_f_external_out" readonly>
                             </div>
                         </div>
                     </div>
@@ -492,7 +641,18 @@
                 $("#pack_in").val('');
                 $("#txtpackpo").val('');
                 $("#packpo_in").val('');
-                $("#txtpo").val('');
+                $("#output_tanggal_plan_qc_endline").val('');
+                $("#output_qc_endline").val('');
+                $("#output_tanggal_scan_qc_endline").val('');
+                $("#output_proses_finishing").val('');
+                $("#output_tanggal_scan_in").val('');
+                $("#output_tanggal_scan_out").val('');
+                $("#output_tanggal_plan_qc_finishing").val('');
+                $("#output_qc_finishing_line").val('');
+                $("#output_tanggal_scan_qc_finishing").val('');
+                $("#output_po").val('');
+                $("#output_packing_line").val('');
+                $("#output_tanggal_scan_packing_line").val('');
 
                 // Defect
                 $('#defect_line').val('');
@@ -517,6 +677,17 @@
                 $('#packing_external_status').val('');
                 $('#packing_external_in').val('');
                 $('#packing_external_out').val('');
+                $('#d_f_proses_finishing').val('');
+                $('#d_f_status_defect').val('');
+                $('#d_f_jenis_defect').val('');
+                $('#d_f_alokasi').val('');
+                $('#d_f_tanggal_plan').val('');
+                $('#d_f_defect_finishing_in').val('');
+                $('#d_f_defect_finishing_out').val('');
+                $('#d_f_external').val('');
+                $('#d_f_external_status').val('');
+                $('#d_f_external_in').val('');
+                $('#d_f_external_out').val('');
 
                 scanqr();
             })
@@ -622,25 +793,31 @@
 
                     console.log(response);
                     if (response != '-') {
-                        document.getElementById('txtsew_line').value = response.sewing_line;
-                        document.getElementById('txtpack').value = response.packing_line;
-                        document.getElementById('txttgl_plan_sew').value = response.tgl_plan_fix;
-                        document.getElementById('txttgl_plan_fin').value = response.tgl_plan_fin;
-                        document.getElementById('sew_in').value = response.sewing_in;
-                        document.getElementById('pack_in').value = response.packing_in;
-                        document.getElementById('txtpackpo').value = response.packingpo_line;
-                        document.getElementById('packpo_in').value = response.packingpo_in;
-                        document.getElementById('txtpo').value = response.po;
+                        $("#output_tanggal_plan_qc_endline").val(response.tanggal_plan_qc_endline);
+                        $("#output_qc_endline").val(response.qc_endline);
+                        $("#output_tanggal_scan_qc_endline").val(response.tanggal_scan_qc_endline);
+                        $("#output_proses_finishing").val(response.proses_finishing);
+                        $("#output_tanggal_scan_in").val(response.tanggal_scan_in);
+                        $("#output_tanggal_scan_out").val(response.tanggal_scan_out);
+                        $("#output_tanggal_plan_qc_finishing").val(response.tanggal_plan_qc_finishing);
+                        $("#output_qc_finishing_line").val(response.qc_finishing_line);
+                        $("#output_tanggal_scan_qc_finishing").val(response.tanggal_scan_qc_finishing);
+                        $("#output_po").val(response.po);
+                        $("#output_packing_line").val(response.packing_line);
+                        $("#output_tanggal_scan_packing_line").val(response.tanggal_scan_packing_line);
                     } else {
-                        document.getElementById('txtsew_line').value = response;
-                        document.getElementById('txtpack').value = response;
-                        document.getElementById('txttgl_plan_sew').value = response;
-                        document.getElementById('txttgl_plan_fin').value = response;
-                        document.getElementById('sew_in').value = response;
-                        document.getElementById('pack_in').value = response;
-                        document.getElementById('txtpackpo').value = response;
-                        document.getElementById('packpo_in').value = response;
-                        document.getElementById('txtpo').value = response;
+                        $("#output_tanggal_plan_qc_endline").val(response);
+                        $("#output_qc_endline").val(response);
+                        $("#output_tanggal_scan_qc_endline").val(response);
+                        $("#output_proses_finishing").val(response);
+                        $("#output_tanggal_scan_in").val(response);
+                        $("#output_tanggal_scan_out").val(response);
+                        $("#output_tanggal_plan_qc_finishing").val(response);
+                        $("#output_qc_finishing_line").val(response);
+                        $("#output_tanggal_scan_qc_finishing").val(response);
+                        $("#output_po").val(response);
+                        $("#output_packing_line").val(response);
+                        $("#output_tanggal_scan_packing_line").val(response);
                     }
 
                     $('#scan-qr-header').CardWidget('toggle')
@@ -679,6 +856,18 @@
                         document.getElementById('external_in').value = response.external_in ? response.external_in : "-";
                         document.getElementById('external_out').value = response.external_out ? response.external_out : "-";
 
+                        $('#d_f_proses_finishing').val(response.d_f_proses_finishing ? response.d_f_proses_finishing : "-");
+                        $('#d_f_status_defect').val(response.d_f_status_defect ? response.d_f_status_defect : "-");
+                        $('#d_f_jenis_defect').val(response.d_f_jenis_defect ? response.d_f_jenis_defect : "-");
+                        $('#d_f_alokasi').val(response.d_f_alokasi ? response.d_f_alokasi : "-");
+                        $('#d_f_tanggal_plan').val(response.d_f_tanggal_plan ? response.d_f_tanggal_plan : "-");
+                        $('#d_f_defect_finishing_in').val(response.d_f_defect_finishing_in ? response.d_f_defect_finishing_in : "-");
+                        $('#d_f_defect_finishing_out').val(response.d_f_defect_finishing_out ? response.d_f_defect_finishing_out : "-");
+                        $('#d_f_external').val(response.d_f_external ? response.d_f_external : "-");
+                        $('#d_f_external_status').val(response.d_f_external_status ? response.d_f_external_status : "-");
+                        $('#d_f_external_in').val(response.d_f_external_in ? response.d_f_external_in : "-");
+                        $('#d_f_external_out').val(response.d_f_external_out ? response.d_f_external_out : "-");
+
                         document.getElementById('packing_defect_line').value = response.packing_line ? response.packing_line : "-";
                         document.getElementById('packing_defect_status').value = response.packing_defect_status ? response.packing_defect_status : "-";
                         document.getElementById('packing_defect_type').value = response.packing_defect_type ? response.packing_defect_type : "-";
@@ -698,6 +887,18 @@
                         document.getElementById('external_status').value = response;
                         document.getElementById('external_in').value = response;
                         document.getElementById('external_out').value = response;
+
+                        $('#d_f_proses_finishing').val(response);
+                        $('#d_f_status_defect').val(response);
+                        $('#d_f_jenis_defect').val(response);
+                        $('#d_f_alokasi').val(response);
+                        $('#d_f_tanggal_plan').val(response);
+                        $('#d_f_defect_finishing_in').val(response);
+                        $('#d_f_defect_finishing_out').val(response);
+                        $('#d_f_external').val(response);
+                        $('#d_f_external_status').val(response);
+                        $('#d_f_external_in').val(response);
+                        $('#d_f_external_out').val(response);
 
                         document.getElementById('packing_defect_status').value = response;
                         document.getElementById('packing_defect_type').value = response;

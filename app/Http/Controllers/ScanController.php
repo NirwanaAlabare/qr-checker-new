@@ -107,38 +107,61 @@ class ScanController extends Controller
 
         $data_sb = DB::connection('mysql_sb')->select("
             select
-            a.sewing_line,
-            b.packing_line,
-            packingpo_line,
-            a.master_plan_id,
-            mp.tgl_plan,
-            DATE_FORMAT(mp.tgl_plan, '%d-%m-%Y') AS tgl_plan_fix,
-            DATE_FORMAT(mpf.tgl_plan, '%d-%m-%Y') as tgl_plan_fin,
-            sewing_in,
-            packing_in,
-            packingpo_in,
-            c.po
+            DATE_FORMAT(mp.tgl_plan, '%d-%m-%Y') AS tanggal_plan_qc_endline,
+            a.sewing_line as qc_endline,
+            DATE_FORMAT(a.sewing_in, '%d-%m-%Y') AS tanggal_scan_qc_endline,
+            b.tipe as proses_finishing,
+            DATE_FORMAT(b.tgl_in, '%d-%m-%Y') AS tanggal_scan_in,
+            DATE_FORMAT(b.tgl_out, '%d-%m-%Y') AS tanggal_scan_out,
+            DATE_FORMAT(mpf.tgl_plan, '%d-%m-%Y') as tanggal_plan_qc_finishing,
+            c.packing_line as qc_finishing_line,
+            DATE_FORMAT(c.packing_in, '%d-%m-%Y') AS tanggal_scan_qc_finishing,
+            d.po,
+            packingpo_line as packing_line,
+            DATE_FORMAT(d.packingpo_in, '%d-%m-%Y') AS tanggal_scan_packing_line
             from (
-                    select o.kode_numbering,u.name sewing_line, master_plan_id, o.created_at sewing_in
-                    from output_rfts o
-                    left join user_sb_wip u on o.created_by = u.id
-                    where o.kode_numbering = '".$qr."'
+                select o.kode_numbering,u.name sewing_line, master_plan_id, o.created_at sewing_in
+                from output_rfts o
+                left join user_sb_wip u on o.created_by = u.id
+                where o.kode_numbering = '".$qr."'
             ) a
             left join (
-                    select kode_numbering,u.username packing_line, master_plan_id, o.created_at packing_in
-                    from output_rfts_packing o
-                    left join userpassword u on o.created_by = u.username
-                    where kode_numbering = '".$qr."'
+                select
+                    DATE(output_secondary_in.updated_at) as tgl_in,
+                    DATE(output_secondary_out.updated_at) as tgl_out,
+                    output_secondary_in.kode_numbering,
+                    output_secondary_master.secondary tipe
+                from
+                    output_secondary_in
+                    left join output_rfts on output_rfts.id = output_secondary_in.rft_id
+                    left join master_plan on master_plan.id = output_rfts.master_plan_id
+                    left join so_det on so_det.id = output_rfts.so_det_id
+                    left join so on so.id = so_det.id_so
+                    left join act_costing on act_costing.id = so.id_cost
+                    left join mastersupplier on mastersupplier.Id_Supplier = act_costing.id_buyer
+                    left join userpassword on userpassword.username = output_secondary_in.created_by_username
+                    left join output_secondary_out on output_secondary_out.secondary_in_id = output_secondary_in.id
+                    left join output_secondary_master on output_secondary_master.id = output_secondary_in.secondary_id
+                where
+                    output_rfts.status = 'NORMAL' and
+                    output_secondary_in.kode_numbering = '".$qr."'
             ) b on a.kode_numbering = b.kode_numbering
+            left join (
+                select kode_numbering,u.username packing_line, master_plan_id, o.created_at packing_in
+                from output_rfts_packing o
+                left join userpassword u on o.created_by = u.username
+                where kode_numbering = '".$qr."'
+            ) c on a.kode_numbering = c.kode_numbering
             left join (
                 select o.kode_numbering, o.created_by_line packingpo_line, o.created_at packingpo_in, COALESCE(ppic_master_so.po, (CASE WHEN output_gudang_stok.id IS NOT NULL THEN 'GUDANG STOK' ELSE NULL END)) as po
                 from output_rfts_packing_po o
                 left join laravel_nds.ppic_master_so on ppic_master_so.id = o.po_id
                 left join output_gudang_stok on output_gudang_stok.packing_po_id = o.id
                 where o.kode_numbering = '".$qr."'
-            ) c on b.kode_numbering = c.kode_numbering
+            ) d on a.kode_numbering = d.kode_numbering
+            
             left join master_plan mp on a.master_plan_id = mp.id
-            left join master_plan mpf on b.master_plan_id = mpf.id
+            left join master_plan mpf on c.master_plan_id = mpf.id
         ");
         return json_encode($data_sb ? $data_sb[0] : '-');
     }
@@ -185,6 +208,18 @@ class ScanController extends Controller
                 GROUP_CONCAT(DISTINCT merged.external_in) AS external_in,
                 GROUP_CONCAT(DISTINCT merged.external_out) AS external_out,
 
+                GROUP_CONCAT(DISTINCT merged.d_f_proses_finishing) AS d_f_proses_finishing,
+                GROUP_CONCAT(DISTINCT merged.d_f_status_defect) AS d_f_status_defect,
+                GROUP_CONCAT(DISTINCT merged.d_f_jenis_defect) AS d_f_jenis_defect,
+                GROUP_CONCAT(DISTINCT merged.d_f_alokasi) AS d_f_alokasi,
+                GROUP_CONCAT(DISTINCT merged.d_f_tanggal_plan) AS d_f_tanggal_plan,
+                GROUP_CONCAT(DISTINCT merged.d_f_defect_finishing_in) AS d_f_defect_finishing_in,
+                GROUP_CONCAT(DISTINCT merged.d_f_defect_finishing_out) AS d_f_defect_finishing_out,
+                GROUP_CONCAT(DISTINCT merged.d_f_external) AS d_f_external,
+                GROUP_CONCAT(DISTINCT merged.d_f_external_status) AS d_f_external_status,
+                GROUP_CONCAT(DISTINCT merged.d_f_external_in) AS d_f_external_in,
+                GROUP_CONCAT(DISTINCT merged.d_f_external_out) AS d_f_external_out,
+
                 -- 📦 Packing Info
                 GROUP_CONCAT(DISTINCT merged.packing_line) AS packing_line,
                 GROUP_CONCAT(DISTINCT merged.packing_defect_status) AS packing_defect_status,
@@ -223,6 +258,18 @@ class ScanController extends Controller
                             dio.reworked_at AS external_out,
                             o.master_plan_id as plan,
 
+                            NULL AS d_f_proses_finishing,
+                            NULL AS d_f_status_defect,
+                            NULL AS d_f_jenis_defect,
+                            NULL AS d_f_alokasi,
+                            NULL AS d_f_tanggal_plan,
+                            NULL AS d_f_defect_finishing_in,
+                            NULL AS d_f_defect_finishing_out,
+                            NULL AS d_f_external,
+                            NULL AS d_f_external_status,
+                            NULL AS d_f_external_in,
+                            NULL AS d_f_external_out,
+
                             -- Packing fields NULLed
                             NULL AS packing_line,
                             NULL AS packing_defect_status,
@@ -245,6 +292,63 @@ class ScanController extends Controller
 
                     UNION
 
+                    select
+                        output_secondary_out_defect.kode_numbering,
+                        NULL AS sewing_line,
+                        NULL AS defect_status,
+                        NULL AS defect_in,
+                        NULL AS defect_out,
+                        NULL AS defect_type,
+                        NULL AS defect_allocation,
+                        NULL AS external_status,
+                        NULL AS external_type,
+                        NULL AS external,
+                        NULL AS external_in,
+                        NULL AS external_out,
+                        NULL AS plan,
+
+                        output_secondary_master.secondary AS d_f_proses_finishing,
+                        UPPER(output_secondary_out_defect.status) AS d_f_status_defect,
+                        output_defect_types.defect_type AS d_f_jenis_defect,
+                        output_defect_types.allocation AS d_f_alokasi,
+                        master_plan.tgl_plan AS d_f_tanggal_plan,
+                        output_secondary_out_defect.created_at AS d_f_defect_finishing_in,
+                        CASE WHEN output_secondary_out_defect.status = 'reworked' THEN output_secondary_out_defect.updated_at ELSE NULL END AS d_f_defect_finishing_out,
+                        dio.output_type AS d_f_external,
+                        dio.STATUS AS d_f_external_status,
+                        dio.created_at AS d_f_external_in,
+                        dio.reworked_at AS d_f_external_out,
+
+                        NULL AS packing_line,
+                        NULL AS packing_defect_status,
+                        NULL AS packing_defect_in,
+                        NULL AS packing_defect_out,
+                        NULL AS packing_defect_type,
+                        NULL AS packing_defect_allocation,
+                        NULL AS packing_external_status,
+                        NULL AS packing_external_type,
+                        NULL AS packing_external,
+                        NULL AS packing_external_in,
+                        NULL AS packing_external_out,
+                        NULL as packing_plan
+                    from
+                        output_secondary_out_defect
+                        left join output_secondary_out on output_secondary_out.id = output_secondary_out_defect.secondary_out_id
+                        left join output_secondary_in on output_secondary_in.id = output_secondary_out.secondary_in_id
+                        left join output_rfts on output_rfts.id = output_secondary_in.rft_id
+                        left join master_plan on master_plan.id = output_rfts.master_plan_id
+                        left join so_det on so_det.id = output_rfts.so_det_id
+                        left join so on so.id = so_det.id_so
+                        left join act_costing on act_costing.id = so.id_cost
+                        left join mastersupplier on mastersupplier.Id_Supplier = act_costing.id_buyer
+                        left join userpassword on userpassword.username = output_secondary_out_defect.created_by_username
+                        left join output_defect_types on output_defect_types.id = output_secondary_out_defect.defect_type_id
+                        left join output_secondary_master on output_secondary_master.id = output_secondary_in.secondary_id
+                        LEFT JOIN output_defect_in_out dio ON dio.defect_id = output_secondary_out_defect.id AND dio.output_type = 'finishing_proses'
+                    WHERE output_secondary_out_defect.kode_numbering = '".$qr."'
+
+                    UNION
+
                     -- 🔹 Packing data
                     SELECT
                             op.kode_numbering,
@@ -260,6 +364,18 @@ class ScanController extends Controller
                             NULL AS external_in,
                             NULL AS external_out,
                             NULL AS plan,
+
+                            NULL AS d_f_proses_finishing,
+                            NULL AS d_f_status_defect,
+                            NULL AS d_f_jenis_defect,
+                            NULL AS d_f_alokasi,
+                            NULL AS d_f_tanggal_plan,
+                            NULL AS d_f_defect_finishing_in,
+                            NULL AS d_f_defect_finishing_out,
+                            NULL AS d_f_external,
+                            NULL AS d_f_external_status,
+                            NULL AS d_f_external_in,
+                            NULL AS d_f_external_out,
 
                             up.username AS packing_line,
                             op.defect_status AS packing_defect_status,
