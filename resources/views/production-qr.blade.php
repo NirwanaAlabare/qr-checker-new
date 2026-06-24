@@ -932,11 +932,12 @@
                 },
                 dataType: 'json',
                 success: function(response) {
+                    console.log(response)
                     if (response != '-') {
-                        document.getElementById('reject_line').value = response.sewing_line ? response.sewing_line : response.packing_line;
-                        document.getElementById('reject_in').value = response.reject_in ? response.reject_in : response.packing_reject_in;
-                        document.getElementById('reject_type').value = response.defect_type ? response.defect_type : response.packing_defect_type;
-                        document.getElementById('reject_allocation').value = response.defect_allocation ? response.defect_allocation : response.packing_defect_allocation;
+                        document.getElementById('reject_line').value = response.sewing_line ?? response.finishing_line ?? response.packing_line ?? '';
+                        document.getElementById('reject_in').value = response.reject_in ?? response.finishing_reject_in ?? response.packing_reject_in ?? '';
+                        document.getElementById('reject_type').value = response.defect_type ?? response.finishing_defect_type ?? response.packing_defect_type ?? '';
+                        document.getElementById('reject_allocation').value = response.defect_allocation ?? response.finishing_defect_allocation ?? response.packing_defect_allocation ?? '';
                         document.getElementById('qc_reject_in').value = response.qc_reject_in ? response.qc_reject_in : "";
                         document.getElementById('qc_reject_status').value = response.qc_reject_status ? (response.qc_reject_status).toUpperCase() : "";
                         document.getElementById('qc_reject_process').value = response.qc_reject_process ? (response.qc_reject_process).toUpperCase() : "";

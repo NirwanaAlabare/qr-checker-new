@@ -427,7 +427,13 @@ class ScanController extends Controller
                 GROUP_CONCAT(DISTINCT merged.reject_in) AS reject_in,
                 GROUP_CONCAT(DISTINCT merged.defect_type) AS defect_type,
                 GROUP_CONCAT(DISTINCT merged.defect_allocation) AS defect_allocation,
-
+                
+                GROUP_CONCAT(DISTINCT merged.finishing_line) AS finishing_line,
+                GROUP_CONCAT(DISTINCT merged.finishing_reject_status) AS finishing_reject_status,
+                GROUP_CONCAT(DISTINCT merged.finishing_reject_in) AS finishing_reject_in,
+                GROUP_CONCAT(DISTINCT merged.finishing_defect_type) AS finishing_defect_type,
+                GROUP_CONCAT(DISTINCT merged.finishing_defect_allocation) AS finishing_defect_allocation,
+                
                 -- 📦 Packing Info
                 GROUP_CONCAT(DISTINCT merged.packing_line) AS packing_line,
                 GROUP_CONCAT(DISTINCT merged.packing_reject_status) AS packing_reject_status,
@@ -459,6 +465,12 @@ class ScanController extends Controller
                         o.created_at AS reject_in,
                         dt.defect_type,
                         dt.allocation AS defect_allocation,
+
+                        NULL AS finishing_line,
+                        NULL AS finishing_reject_status,
+                        NULL AS finishing_reject_in,
+                        NULL AS finishing_defect_type,
+                        NULL AS finishing_defect_allocation,
 
                         NULL AS packing_line,
                         NULL AS packing_reject_status,
@@ -492,6 +504,56 @@ class ScanController extends Controller
 
                     UNION
 
+                    select
+                        output_secondary_out_reject.kode_numbering,
+                        NULL AS sewing_line,
+                        NULL AS reject_status,
+                        NULL AS reject_in,
+                        NULL AS defect_type,
+                        NULL AS defect_allocation,
+
+                        CONCAT('FINISHING PROSES ', userpassword.username) AS finishing_line,
+                        output_secondary_out_reject.status AS finishing_reject_status,
+                        output_secondary_out_reject.created_at AS finishing_reject_in,
+                        output_defect_types.defect_type AS finishing_defect_type,
+                        output_defect_types.allocation AS finishing_defect_allocation,
+
+                        NULL AS packing_line,
+                        NULL AS packing_reject_status,
+                        NULL AS packing_reject_in,
+                        NULL AS packing_defect_type,
+                        NULL AS packing_defect_allocation,
+
+                        NULL AS qc_reject_in,
+                        NULL AS qc_reject_status,
+                        NULL AS qc_reject_process,
+                        NULL AS qc_reject_grade,
+                        NULL AS qc_reject_type,
+                        NULL AS qc_reject_area,
+                        NULL AS qc_reject_out,
+                        NULL AS qc_reject_out_trans,
+                        NULL AS qc_reject_out_tujuan,
+                        NULL AS qc_reject_out_sewing,
+
+                        output_rfts.master_plan_id
+                    from
+                        output_secondary_out_reject
+                        left join output_secondary_out on output_secondary_out.id = output_secondary_out_reject.secondary_out_id
+                        left join output_secondary_in on output_secondary_in.id = output_secondary_out.secondary_in_id
+                        left join output_rfts on output_rfts.id = output_secondary_in.rft_id
+                        left join master_plan on master_plan.id = output_rfts.master_plan_id
+                        left join so_det on so_det.id = output_rfts.so_det_id
+                        left join so on so.id = so_det.id_so
+                        left join act_costing on act_costing.id = so.id_cost
+                        left join mastersupplier on mastersupplier.Id_Supplier = act_costing.id_buyer
+                        left join userpassword on userpassword.username = output_secondary_out_reject.created_by_username
+                        left join output_defect_types on output_defect_types.id = output_secondary_out_reject.defect_type_id
+                        left join output_secondary_master on output_secondary_master.id = output_secondary_in.secondary_id
+                    where
+                        output_secondary_out_reject.kode_numbering = '".$qr."'
+
+                    UNION
+
                     -- 🔹 Packing data
                     SELECT
                         o.kode_numbering,
@@ -500,6 +562,12 @@ class ScanController extends Controller
                         NULL AS reject_in,
                         NULL AS defect_type,
                         NULL AS defect_allocation,
+
+                        NULL AS finishing_line,
+                        NULL AS finishing_reject_status,
+                        NULL AS finishing_reject_in,
+                        NULL AS finishing_defect_type,
+                        NULL AS finishing_defect_allocation,
 
                         CONCAT('FINISHING ', us.username) AS packing_line,
                         o.reject_status AS packing_reject_status,
@@ -540,6 +608,12 @@ class ScanController extends Controller
                         ori.created_at AS reject_in,
                         dt.defect_type,
                         dt.allocation AS defect_allocation,
+
+                        NULL AS finishing_line,
+                        NULL AS finishing_reject_status,
+                        NULL AS finishing_reject_in,
+                        NULL AS finishing_defect_type,
+                        NULL AS finishing_defect_allocation,
 
                         NULL AS packing_line,
                         NULL AS packing_reject_status,
