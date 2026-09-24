@@ -525,6 +525,34 @@
                         </div>
                         <div class="col-12">
                             <hr style="border-top: 1px solid rgba(109, 109, 109, 1);">
+                            <h5 class="text-sb fw-bold my-1">Reject Packing Line</h5>
+                        </div>
+                        <div class="col-3 col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>Line</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="packing_reject_line" id="packing_reject_line" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>Reject IN</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="packing_reject_in" id="packing_reject_in" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>Jenis Defect</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="packing_reject_type" id="packing_reject_type" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label"><small><b>Alokasi</b></small></label>
+                                <input type="text" class="form-control form-control-sm" name="packing_reject_allocation" id="packing_reject_allocation" readonly>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <hr style="border-top: 1px solid rgba(109, 109, 109, 1);">
                             <h5 class="text-sb fw-bold my-1">QC Reject</h5>
                         </div>
                         <div class="col-md-4">
@@ -688,6 +716,26 @@
                 $('#d_f_external_status').val('');
                 $('#d_f_external_in').val('');
                 $('#d_f_external_out').val('');
+
+                $('#reject_line').val("");
+                $('#reject_in').val("");
+                $('#reject_type').val("");
+                $('#reject_allocation').val("");
+                $('#packing_reject_line').val("");
+                $('#packing_reject_in').val("");
+                $('#packing_reject_type').val("");
+                $('#packing_reject_allocation').val("");
+                $('#qc_reject_in').val("");
+                $('#qc_reject_status').val("");
+                $('#qc_reject_process').val("");
+                $('#qc_reject_type').val("");
+                $('#qc_reject_area').val("");
+                $('#qc_reject_grade').val("");
+                $('#qc_reject_out').val("");
+                $('#qc_reject_out_trans').val("");
+                $('#qc_reject_out_tujuan').val("");
+                $('#qc_reject_out_sewing').val("");
+                $('#qc_reject_out_tujuan_sewing').val("");
 
                 scanqr();
             })
@@ -938,6 +986,12 @@
                         document.getElementById('reject_in').value = response.reject_in ?? response.finishing_reject_in ?? response.packing_reject_in ?? '';
                         document.getElementById('reject_type').value = response.defect_type ?? response.finishing_defect_type ?? response.packing_defect_type ?? '';
                         document.getElementById('reject_allocation').value = response.defect_allocation ?? response.finishing_defect_allocation ?? response.packing_defect_allocation ?? '';
+
+                        document.getElementById('packing_reject_line').value = response.packing_po_line ?? '';
+                        document.getElementById('packing_reject_in').value = response.packing_po_reject_in ?? '';
+                        document.getElementById('packing_reject_type').value = response.packing_po_defect_type ?? '';
+                        document.getElementById('packing_reject_allocation').value = response.packing_po_defect_allocation ?? '';
+
                         document.getElementById('qc_reject_in').value = response.qc_reject_in ? response.qc_reject_in : "";
                         document.getElementById('qc_reject_status').value = response.qc_reject_status ? (response.qc_reject_status).toUpperCase() : "";
                         document.getElementById('qc_reject_process').value = response.qc_reject_process ? (response.qc_reject_process).toUpperCase() : "";
@@ -962,6 +1016,10 @@
                         document.getElementById('reject_in').value = "-";
                         document.getElementById('reject_type').value = "-";
                         document.getElementById('reject_allocation').value = "-";
+                        document.getElementById('packing_reject_line').value = "-";
+                        document.getElementById('packing_reject_in').value = "-";
+                        document.getElementById('packing_reject_type').value = "-";
+                        document.getElementById('packing_reject_allocation').value = "-";
                         document.getElementById('qc_reject_in').value = "-";
                         document.getElementById('qc_reject_status').value = "-";
                         document.getElementById('qc_reject_process').value = "-";

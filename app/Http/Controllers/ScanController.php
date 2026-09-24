@@ -120,16 +120,17 @@ class ScanController extends Controller
             packingpo_line as packing_line,
             DATE_FORMAT(d.packingpo_in, '%d-%m-%Y') AS tanggal_scan_packing_line
             from (
-                select o.kode_numbering,u.name sewing_line, master_plan_id, o.created_at sewing_in
+                select o.kode_numbering,up.username sewing_line, master_plan_id, o.created_at sewing_in
                 from output_rfts o
                 left join user_sb_wip u on o.created_by = u.id
+                left join userpassword up on up.line_id = u.line_id
                 where o.kode_numbering = '".$qr."'
             ) a
             left join (
                 select
                     DATE(output_secondary_in.updated_at) as tgl_in,
-                    CASE 
-                        WHEN output_secondary_out.status IN ('rft','rework') 
+                    CASE
+                        WHEN output_secondary_out.status IN ('rft','rework')
                         THEN DATE(output_secondary_out.updated_at)
                         ELSE NULL
                     END AS tgl_out,
@@ -163,7 +164,7 @@ class ScanController extends Controller
                 left join output_gudang_stok on output_gudang_stok.packing_po_id = o.id
                 where o.kode_numbering = '".$qr."'
             ) d on a.kode_numbering = d.kode_numbering
-            
+
             left join master_plan mp on a.master_plan_id = mp.id
             left join master_plan mpf on c.master_plan_id = mpf.id
         ");
@@ -431,19 +432,26 @@ class ScanController extends Controller
                 GROUP_CONCAT(DISTINCT merged.reject_in) AS reject_in,
                 GROUP_CONCAT(DISTINCT merged.defect_type) AS defect_type,
                 GROUP_CONCAT(DISTINCT merged.defect_allocation) AS defect_allocation,
-                
+
                 GROUP_CONCAT(DISTINCT merged.finishing_line) AS finishing_line,
                 GROUP_CONCAT(DISTINCT merged.finishing_reject_status) AS finishing_reject_status,
                 GROUP_CONCAT(DISTINCT merged.finishing_reject_in) AS finishing_reject_in,
                 GROUP_CONCAT(DISTINCT merged.finishing_defect_type) AS finishing_defect_type,
                 GROUP_CONCAT(DISTINCT merged.finishing_defect_allocation) AS finishing_defect_allocation,
-                
-                -- 📦 Packing Info
+
+                -- 📦 QC Finishing Info
                 GROUP_CONCAT(DISTINCT merged.packing_line) AS packing_line,
                 GROUP_CONCAT(DISTINCT merged.packing_reject_status) AS packing_reject_status,
                 GROUP_CONCAT(DISTINCT merged.packing_reject_in) AS packing_reject_in,
                 GROUP_CONCAT(DISTINCT merged.packing_defect_type) AS packing_defect_type,
                 GROUP_CONCAT(DISTINCT merged.packing_defect_allocation) AS packing_defect_allocation,
+
+                -- 📦 Packing Info
+                GROUP_CONCAT(DISTINCT merged.packing_po_line) AS packing_po_line,
+                GROUP_CONCAT(DISTINCT merged.packing_po_reject_status) AS packing_po_reject_status,
+                GROUP_CONCAT(DISTINCT merged.packing_po_reject_in) AS packing_po_reject_in,
+                GROUP_CONCAT(DISTINCT merged.packing_po_defect_type) AS packing_po_defect_type,
+                GROUP_CONCAT(DISTINCT merged.packing_po_defect_allocation) AS packing_po_defect_allocation,
 
                 -- 📅 Master Plan Info
                 mp.id AS master_plan_id,
@@ -481,6 +489,12 @@ class ScanController extends Controller
                         NULL AS packing_reject_in,
                         NULL AS packing_defect_type,
                         NULL AS packing_defect_allocation,
+
+                        NULL AS packing_po_line,
+                        NULL AS packing_po_reject_status,
+                        NULL AS packing_po_reject_in,
+                        NULL AS packing_po_defect_type,
+                        NULL AS packing_po_defect_allocation,
 
                         ori.created_at AS qc_reject_in,
                         ori.status AS qc_reject_status,
@@ -528,6 +542,12 @@ class ScanController extends Controller
                         NULL AS packing_defect_type,
                         NULL AS packing_defect_allocation,
 
+                        NULL AS packing_po_line,
+                        NULL AS packing_po_reject_status,
+                        NULL AS packing_po_reject_in,
+                        NULL AS packing_po_defect_type,
+                        NULL AS packing_po_defect_allocation,
+
                         NULL AS qc_reject_in,
                         NULL AS qc_reject_status,
                         NULL AS qc_reject_process,
@@ -558,7 +578,7 @@ class ScanController extends Controller
 
                     UNION
 
-                    -- 🔹 Packing data
+                    -- 🔹 QC Finishing data
                     SELECT
                         o.kode_numbering,
                         NULL AS sewing_line,
@@ -578,6 +598,12 @@ class ScanController extends Controller
                         o.created_at AS packing_reject_in,
                         dt.defect_type AS packing_defect_type,
                         dt.allocation AS packing_defect_allocation,
+
+                        NULL AS packing_po_line,
+                        NULL AS packing_po_reject_status,
+                        NULL AS packing_po_reject_in,
+                        NULL AS packing_po_defect_type,
+                        NULL AS packing_po_defect_allocation,
 
                         ori.created_at AS qc_reject_in,
                         ori.status AS qc_reject_status,
@@ -604,6 +630,55 @@ class ScanController extends Controller
 
                     UNION
 
+                    -- 🔹 Packing data
+                    SELECT
+                        o.kode_numbering,
+                        NULL AS sewing_line,
+                        NULL AS reject_status,
+                        NULL AS reject_in,
+                        NULL AS defect_type,
+                        NULL AS defect_allocation,
+
+                        NULL AS finishing_line,
+                        NULL AS finishing_reject_status,
+                        NULL AS finishing_reject_in,
+                        NULL AS finishing_defect_type,
+                        NULL AS finishing_defect_allocation,
+
+                        NULL AS packing_line,
+                        NULL AS packing_reject_status,
+                        NULL AS packing_reject_in,
+                        NULL AS packing_defect_type,
+                        NULL AS packing_defect_allocation,
+
+                        CONCAT('PACKING ', us.username) AS packing_po_line,
+                        o.type AS packing_po_reject_status,
+                        o.created_at AS packing_po_reject_in,
+                        dt.defect_type AS packing_po_defect_type,
+                        dt.allocation AS packing_po_defect_allocation,
+
+                        NULL AS qc_reject_in,
+                        NULL AS qc_reject_status,
+                        NULL AS qc_reject_process,
+                        NULL AS qc_reject_grade,
+                        NULL AS qc_reject_type,
+                        NULL AS qc_reject_area,
+                        NULL qc_reject_out,
+                        NULL qc_reject_out_trans,
+                        NULL qc_reject_out_tujuan,
+                        NULL AS qc_reject_out_sewing,
+
+                        o.master_plan_id
+                    FROM output_rfts_packing_po o
+                    LEFT JOIN output_rejects orj ON orj.id = o.reject_id and o.department = 'qc'
+                    LEFT JOIN output_rejects_packing orp ON orp.id = o.reject_id and o.department = 'packing'
+                    LEFT JOIN output_defect_types dt ON dt.id = COALESCE(orj.reject_type_id, orp.reject_type_id)
+                    LEFT JOIN user_sb_wip u ON o.created_by = u.id
+                    LEFT JOIN userpassword us ON us.line_id = u.line_id
+                    WHERE o.kode_numbering = '".$qr."' and o.type = 'reject'
+
+                    UNION
+
                     -- 🔹 Reject data
                     SELECT
                         ori.kode_numbering,
@@ -624,6 +699,12 @@ class ScanController extends Controller
                         NULL AS packing_reject_in,
                         NULL AS packing_defect_type,
                         NULL AS packing_defect_allocation,
+
+                        NULL AS packing_po_line,
+                        NULL AS packing_po_reject_status,
+                        NULL AS packing_po_reject_in,
+                        NULL AS packing_po_defect_type,
+                        NULL AS packing_po_defect_allocation,
 
                         ori.created_at AS qc_reject_in,
                         ori.status AS qc_reject_status,
