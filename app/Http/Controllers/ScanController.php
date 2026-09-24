@@ -157,7 +157,7 @@ class ScanController extends Controller
                 where kode_numbering = '".$qr."'
             ) c on a.kode_numbering = c.kode_numbering
             left join (
-                select o.kode_numbering, o.created_by_line packingpo_line, o.created_at packingpo_in, COALESCE(ppic_master_so.po, (CASE WHEN output_gudang_stok.id IS NOT NULL THEN 'GUDANG STOK' ELSE NULL END)) as po
+                select o.kode_numbering, o.created_by_line packingpo_line, o.created_at packingpo_in, COALESCE(ppic_master_so.po, (CASE WHEN output_gudang_stok.id IS NOT NULL THEN 'TEMPORARY PACKING' ELSE NULL END)) as po
                 from output_rfts_packing_po o
                 left join laravel_nds.ppic_master_so on ppic_master_so.id = o.po_id
                 left join output_gudang_stok on output_gudang_stok.packing_po_id = o.id
