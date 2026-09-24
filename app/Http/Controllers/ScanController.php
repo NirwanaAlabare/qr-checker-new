@@ -148,7 +148,6 @@ class ScanController extends Controller
                     left join output_secondary_out on output_secondary_out.secondary_in_id = output_secondary_in.id
                     left join output_secondary_master on output_secondary_master.id = output_secondary_in.secondary_id
                 where
-                    output_rfts.status = 'NORMAL' and
                     output_secondary_in.kode_numbering = '".$qr."'
             ) b on a.kode_numbering = b.kode_numbering
             left join (
